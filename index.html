@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI Frontend</title>
+</head>
+<body>
+    <h2>Elasticsearch Interface</h2>
+
+    <!-- Get Best Document -->
+    <form action="/get" method="get">
+        <input type="submit" value="Get Best Document">
+    </form>
+
+    <!-- Insert Document -->
+    <form action="/insert" method="post">
+        <textarea name="text" rows="4" cols="50" placeholder="Enter text to insert"></textarea>
+        <br><input type="submit" value="Insert Document">
+    </form>
+
+    <div id="output"></div>
+</body>
+</html>
