@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>FastAPI Frontend</title>
+    <title>FastAPI Elasticsearch Interface</title>
 </head>
 <body>
     <h2>Elasticsearch Interface</h2>
 
-    <!-- Get Best Document -->
-    <form action="/get" method="get">
-        <input type="submit" value="Get Best Document">
+    <!-- Search Document -->
+    <form id="search-form">
+        <input type="text" id="search-query" placeholder="Enter search query">
+        <input type="submit" value="Search">
     </form>
 
     <!-- Insert Document -->
-    <form action="/insert" method="post">
-        <textarea name="text" rows="4" cols="50" placeholder="Enter text to insert"></textarea>
+    <form id="insert-form">
+        <textarea id="insert-text" rows="4" cols="50" placeholder="Enter text to insert"></textarea>
         <br><input type="submit" value="Insert Document">
     </form>
 
     <div id="output"></div>
+
+    <script>
+        document.getElementById("search-form").onsubmit = async function(event) {
+            event.preventDefault();
+            let query = document.getElementById("search-query").value;
+            let response = await fetch(`/get?query=${query}`);
+            let result = await response.json();
+            document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+        };
+
+        document.getElementById("insert-form").onsubmit = async function(event) {
+            event.preventDefault();
+            let text = document.getElementById("insert-text").value;
+            let response = await fetch("/insert", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            });
+            let result = await response.json();
+            document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+        };
+    </script>
 </body>
 </html>
