@@ -7,13 +7,13 @@
     <h2>Elasticsearch Interface</h2>
 
     <!-- Search Document -->
-    <form id="search-form">
+    <form id="search-form", method="get">
         <input type="text" id="search-query" placeholder="Enter search query">
         <input type="submit" value="Search">
     </form>
 
     <!-- Insert Document -->
-    <form id="insert-form">
+    <form id="insert-form", method="get">
         <textarea id="insert-text" rows="4" cols="50" placeholder="Enter text to insert"></textarea>
         <br><input type="submit" value="Insert Document">
     </form>
@@ -24,7 +24,7 @@
         document.getElementById("search-form").onsubmit = async function(event) {
             event.preventDefault();
             let query = document.getElementById("search-query").value;
-            let response = await fetch(`/get?query=${query}`);
+            let response = await fetch("/get/"+query);
             let result = await response.json();
             document.getElementById("output").innerText = JSON.stringify(result, null, 2);
         };
@@ -32,11 +32,7 @@
         document.getElementById("insert-form").onsubmit = async function(event) {
             event.preventDefault();
             let text = document.getElementById("insert-text").value;
-            let response = await fetch("/insert", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: text })
-            });
+            let response = await fetch("/insert/"+text);
             let result = await response.json();
             document.getElementById("output").innerText = JSON.stringify(result, null, 2);
         };

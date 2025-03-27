@@ -1,0 +1,34 @@
+ersion: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - mynetwork
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 3s
+      retries: 10
+
+
+  fastapi:
+    build: .
+    container_name: fastapi2
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ES_HOST=http://elasticsearch:9200
+    networks:
+      - mynetwork
+    ports:
+      - "9567:9567"
+
+networks:
+  mynetwork:
+    driver: bridge
