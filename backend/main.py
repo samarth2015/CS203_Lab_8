@@ -7,7 +7,7 @@ import os
 app = FastAPI()
 
 # Elasticsearch running inside the backend VM
-ES_HOST = os.getenv("ES_HOST", "http://localhost:9200")  # Default to localhost for local runs
+ES_HOST = os.getenv("ES_HOST", "http://localhost:9567/es/")  # Default to localhost for local runs
 es = Elasticsearch(ES_HOST)
 INDEX_NAME = "documents"
 
@@ -33,6 +33,7 @@ async def get_best_document(query: str):
         "query": {"match": {"text": query}}
     })
     return {"hits": response["hits"]["hits"]}
+    
 
 
 @app.get("/insert/{text}")
@@ -44,4 +45,4 @@ async def insert_document(text: str):
     return {"result": response["result"], "id": doc_id}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=9200)
+    uvicorn.run(app, host="0.0.0.0", port=9567)

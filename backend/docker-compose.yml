@@ -1,4 +1,3 @@
-ersion: '3'
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
@@ -14,8 +13,8 @@ services:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
       interval: 3s
       retries: 10
-
-
+    volumes:
+      - root_esdata:/usr/share/elasticsearch/data
   fastapi:
     build: .
     container_name: fastapi2
@@ -26,8 +25,19 @@ services:
       - ES_HOST=http://elasticsearch:9200
     networks:
       - mynetwork
+    expose:
+      - "9567"  # Expose FastAPI inside the network
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    depends_on:
+      - fastapi
     ports:
-      - "9567:9567"
+      - "9567:80"  # Map Nginx to host port 9567
+    networks:
+      - mynetwork
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Mount custom Nginx config
 
 networks:
   mynetwork:
